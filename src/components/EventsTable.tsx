@@ -31,6 +31,24 @@ function SortIcon({ col, sortKey, dir }: { col: SortKey; sortKey: SortKey; dir: 
         : <ChevronDown className="w-3 h-3 ml-1 text-blue-400 inline" />;
 }
 
+function ThCell({ col, label, sortKey, sortDir, onSort }: {
+    col: SortKey;
+    label: string;
+    sortKey: SortKey;
+    sortDir: SortDir;
+    onSort: (col: SortKey) => void;
+}) {
+    return (
+        <TableHead
+            className="text-slate-400 cursor-pointer select-none hover:text-slate-200 transition-colors whitespace-nowrap"
+            onClick={() => onSort(col)}
+        >
+            {label}
+            <SortIcon col={col} sortKey={sortKey} dir={sortDir} />
+        </TableHead>
+    );
+}
+
 export function EventsTable() {
     const { events, setSelectedEventId } = useStore();
     const [sortKey, setSortKey] = useState<SortKey>('startDate');
@@ -111,16 +129,6 @@ export function EventsTable() {
         );
     }
 
-    const ThCell = ({ col, label }: { col: SortKey; label: string }) => (
-        <TableHead
-            className="text-slate-400 cursor-pointer select-none hover:text-slate-200 transition-colors whitespace-nowrap"
-            onClick={() => handleSort(col)}
-        >
-            {label}
-            <SortIcon col={col} sortKey={sortKey} dir={sortDir} />
-        </TableHead>
-    );
-
     return (
         <Card className="bg-slate-900 border-slate-800 text-slate-100">
             <CardHeader className="pb-3 border-b border-slate-800">
@@ -141,11 +149,11 @@ export function EventsTable() {
                 <Table>
                     <TableHeader className="bg-slate-950">
                         <TableRow className="hover:bg-slate-900 border-slate-800">
-                            <ThCell col="startDate" label="Date" />
-                            <ThCell col="duration" label="Duration" />
-                            <ThCell col="totalDepth" label="Total Depth" />
-                            <ThCell col="maxIntensity" label="Peak 1-hr" />
-                            <ThCell col="returnPeriod" label="Return Period" />
+                            <ThCell col="startDate" label="Date" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
+                            <ThCell col="duration" label="Duration" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
+                            <ThCell col="totalDepth" label="Total Depth" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
+                            <ThCell col="maxIntensity" label="Peak 1-hr" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
+                            <ThCell col="returnPeriod" label="Return Period" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
                             <TableHead className="text-slate-400 w-10" />
                         </TableRow>
                     </TableHeader>
