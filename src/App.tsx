@@ -1,9 +1,14 @@
+import { lazy, Suspense } from 'react';
 import { Layout } from './components/Layout';
 import { Dashboard } from './components/Dashboard';
 import { SettingsPanel } from './components/SettingsPanel';
 import { DataIngestion } from './components/DataIngestion';
-import { EventHyetograph } from './components/EventHyetograph';
 import { useStore } from './store';
+
+// Lazy so recharts stays out of the initial bundle
+const EventHyetograph = lazy(() =>
+  import('./components/EventHyetograph').then(m => ({ default: m.EventHyetograph }))
+);
 
 function App() {
   const selectedEventId = useStore(s => s.selectedEventId);
@@ -19,7 +24,11 @@ function App() {
         <Dashboard />
       </Layout>
 
-      {selectedEventId && <EventHyetograph />}
+      {selectedEventId && (
+        <Suspense fallback={null}>
+          <EventHyetograph />
+        </Suspense>
+      )}
     </>
   );
 }
