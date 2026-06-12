@@ -1,10 +1,14 @@
-import { useMemo } from 'react';
+import { lazy, Suspense, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { EventsTable } from './EventsTable';
-import { StormTimeline } from './StormTimeline';
 import { useStore } from '@/store';
 import { formatDistanceStrict } from 'date-fns';
 import { CloudRain, BarChart2, TrendingUp, Droplets, Calendar, Activity } from 'lucide-react';
+
+// Lazy so recharts stays out of the initial bundle
+const StormTimeline = lazy(() =>
+    import('./StormTimeline').then(m => ({ default: m.StormTimeline }))
+);
 
 export function Dashboard() {
     const { events, rawPoints } = useStore();
@@ -120,7 +124,9 @@ export function Dashboard() {
                 </div>
             )}
 
-            <StormTimeline />
+            <Suspense fallback={<Card className="bg-slate-900 border-slate-800 min-h-[340px]" />}>
+                <StormTimeline />
+            </Suspense>
             <EventsTable />
         </div>
     );
