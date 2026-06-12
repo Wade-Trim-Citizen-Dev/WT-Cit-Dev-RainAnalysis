@@ -70,16 +70,17 @@ export function EventHyetograph() {
         .sort((a, b) => a.timestamp - b.timestamp);
 
     // Build chart data with cumulative depth
+    const chartData = [];
     let cumulative = 0;
-    const chartData = eventPoints.map(p => {
+    for (const p of eventPoints) {
         cumulative += p.value;
-        return {
+        chartData.push({
             time: format(p.timestamp, 'HH:mm'),
             timestamp: p.timestamp,
             depth: parseFloat(p.value.toFixed(3)),
             cumulative: parseFloat(cumulative.toFixed(3)),
-        };
-    });
+        });
+    }
 
     // Peak 1-hour intensity in in/hr
     const peak1hr = event.peakIntensities['1hr'] ?? 0;
